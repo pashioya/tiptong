@@ -32,7 +32,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int currentProgress = 10; // Initialize with a default value
+  int currentProgress = 1; // Initialize with a default value
   int totalProgress = 20; // Initialize with a default value
 
   void incrementCounter() {
@@ -71,17 +71,54 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: Image.asset(
+                'assets/images/bear.jpeg', // Correctly reference the image asset
+                width: 200, // You can set the size of the image here
+                height: 200,
+              ),
+            ),
             const Text(
-              'You have pushed the button this many times:',
+              'Welk dier wordt hier afgebeeld?',
             ),
-            Text(
-              '$currentProgress', // Display current progress
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
+            Padding(
+              padding: const EdgeInsets.all(17.0),
+              child: Row(
+                mainAxisSize: MainAxisSize.values[0],
+                children: [
+                  // Expanded widget makes sure TextFormField takes available space
+                  SizedBox(
+                    width: 200,
+                    height: 50,
+                    child: TextFormField(
+                      decoration: const InputDecoration(
+                        border: UnderlineInputBorder(),
+                        labelText: 'Antwoord',
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(
+                          Theme.of(context).colorScheme.primary),
+                    ),
+                    onPressed: () {
+                      print("Check button pressed");
+                    },
+                    icon: const Icon(
+                      Icons.check,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
+            )
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
+        shape: const CircleBorder(),
         onPressed: () {
           incrementCounter();
         },

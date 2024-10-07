@@ -21,12 +21,11 @@ class ProgressWidget extends StatelessWidget {
         Text(
           '$currentProgress/$totalProgress',
           style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                color: Theme.of(context).colorScheme.primary,
-              ),
+              color: Theme.of(context).colorScheme.primary, fontSize: 15),
         ),
         const SizedBox(height: 8),
         Container(
-          width: 200,
+          width: 100,
           height: 8,
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.surfaceVariant,
