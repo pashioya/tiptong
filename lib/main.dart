@@ -43,13 +43,66 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  void openImageModal(BuildContext context) {
+    showGeneralDialog(
+      context: context,
+      barrierDismissible: true,
+      barrierLabel: 'Image Modal',
+      barrierColor: Colors.black54, // Background overlay
+      transitionDuration: const Duration(milliseconds: 300),
+      pageBuilder: (context, animation, secondaryAnimation) {
+        return Scaffold(
+          backgroundColor: Colors.transparent,
+          body: Stack(
+            children: [
+              Center(
+                child: Image.asset(
+                  'assets/images/bear.jpeg',
+                  width: double.infinity,
+                  height: double.infinity,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              Positioned(
+                top: 60,
+                left: 30,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white.withOpacity(0.5),
+                  ),
+                  child: const Icon(Icons.close, size: 30),
+                  onPressed: () {
+                    Navigator.pop(context); // Close the modal
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+      transitionBuilder: (context, animation, secondaryAnimation, child) {
+        const begin = Offset(0.0, 1.0); // Start from bottom
+        const end = Offset.zero;
+        const curve = Curves.easeInOut;
+
+        var tween =
+            Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+        return SlideTransition(
+          position: animation.drive(tween),
+          child: child,
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).dialogBackgroundColor,
         leading: IconButton(
-          icon: const Icon(Icons.menu),
+          icon: const Icon(Icons.table_chart_outlined),
           onPressed: () {
             print("Menu icon pressed");
           },
@@ -60,7 +113,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.settings),
+            icon: const Icon(Icons.menu_book_rounded),
             onPressed: () {
               print("Settings icon pressed");
             },
@@ -71,23 +124,30 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: Image.asset(
-                'assets/images/bear.jpeg', // Correctly reference the image asset
-                width: 200, // You can set the size of the image here
-                height: 200,
+            GestureDetector(
+              onTap: () {
+                openImageModal(context); // Open the animated modal
+              },
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(40),
+                child: SizedBox.fromSize(
+                  size: const Size(200, 200),
+                  child: Image.asset(
+                    'assets/images/bear.jpeg',
+                    fit: BoxFit.cover,
+                  ),
+                ),
               ),
             ),
+            const SizedBox(height: 20),
             const Text(
               'Welk dier wordt hier afgebeeld?',
             ),
             Padding(
               padding: const EdgeInsets.all(17.0),
               child: Row(
-                mainAxisSize: MainAxisSize.values[0],
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  // Expanded widget makes sure TextFormField takes available space
                   SizedBox(
                     width: 200,
                     height: 50,
@@ -99,16 +159,12 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   ),
                   IconButton(
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all<Color>(
-                          Theme.of(context).colorScheme.primary),
-                    ),
                     onPressed: () {
                       print("Check button pressed");
                     },
                     icon: const Icon(
                       Icons.check,
-                      color: Colors.white,
+                      color: Colors.black,
                     ),
                   ),
                 ],
@@ -120,7 +176,7 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: FloatingActionButton(
         shape: const CircleBorder(),
         onPressed: () {
-          incrementCounter();
+          // incrementCounter();
         },
         backgroundColor: Theme.of(context).colorScheme.secondary,
         child: const Icon(Icons.help),
