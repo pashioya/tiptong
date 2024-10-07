@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tiptong/src/widgets/hint_keyboard.dart';
 import 'package:tiptong/src/widgets/progress-bar.dart';
 
 void main() {
@@ -34,12 +35,11 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int currentProgress = 1; // Initialize with a default value
   int totalProgress = 20; // Initialize with a default value
+  bool _isHintKeyboardVisible = false; // Tracks visibility of the hint keyboard
 
-  void incrementCounter() {
+  void toggleHintKeyboard() {
     setState(() {
-      if (currentProgress < totalProgress) {
-        currentProgress++; // Increment progress until it reaches the total
-      }
+      _isHintKeyboardVisible = !_isHintKeyboardVisible;
     });
   }
 
@@ -120,33 +120,31 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ],
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            GestureDetector(
-              onTap: () {
-                openImageModal(context); // Open the animated modal
-              },
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(40),
-                child: SizedBox.fromSize(
-                  size: const Size(200, 200),
-                  child: Image.asset(
-                    'assets/images/bear.jpeg',
-                    fit: BoxFit.cover,
+      body: Stack(
+        children: [
+          Column(
+            children: <Widget>[
+              GestureDetector(
+                onTap: () {
+                  openImageModal(context); // Open the animated modal
+                },
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(40),
+                  child: SizedBox.fromSize(
+                    size: const Size(200, 200),
+                    child: Image.asset(
+                      'assets/images/bear.jpeg',
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
               ),
-            ),
-            const SizedBox(height: 20),
-            const Text(
-              'Welk dier wordt hier afgebeeld?',
-            ),
-            Padding(
-              padding: const EdgeInsets.all(17.0),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
+              const SizedBox(height: 20),
+              const Text(
+                'Welk dier wordt hier afgebeeld?',
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   SizedBox(
                     width: 200,
@@ -169,19 +167,36 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ],
               ),
-            )
-          ],
-        ),
+            ],
+          ),
+          // The animated hint keyboard at the bottom
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+            bottom: _isHintKeyboardVisible ? 0 : -300, // Push up or down
+            left: 0,
+            right: 0,
+            child: const HintKeyboard(), // Your custom keyboard widget
+          ),
+          // The animated help button above the hint keyboard
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+            bottom:
+                _isHintKeyboardVisible ? 250 : 16, // Moves above the keyboard
+            left: MediaQuery.of(context).size.width / 2 -
+                28, // Center horizontally
+            child: FloatingActionButton(
+              shape: const CircleBorder(),
+              onPressed: () {
+                toggleHintKeyboard(); // Show/hide the hint keyboard
+              },
+              backgroundColor: Theme.of(context).colorScheme.secondary,
+              child: const Icon(Icons.help),
+            ),
+          ),
+        ],
       ),
-      floatingActionButton: FloatingActionButton(
-        shape: const CircleBorder(),
-        onPressed: () {
-          // incrementCounter();
-        },
-        backgroundColor: Theme.of(context).colorScheme.secondary,
-        child: const Icon(Icons.help),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }
