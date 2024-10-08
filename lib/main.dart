@@ -36,11 +36,40 @@ class _MyHomePageState extends State<MyHomePage> {
   int currentProgress = 1; // Initialize with a default value
   int totalProgress = 20; // Initialize with a default value
   bool _isHintKeyboardVisible = false; // Tracks visibility of the hint keyboard
+  TextEditingController textController = TextEditingController();
+  late FocusNode _textFieldFocusNode; // To track focus on the text field
+
+  @override
+  void initState() {
+    super.initState();
+    _textFieldFocusNode = FocusNode();
+
+    // Add listener to the focus node to track when the text field gains or loses focus
+    _textFieldFocusNode.addListener(() {
+      if (_textFieldFocusNode.hasFocus) {
+        setState(() {
+          _isHintKeyboardVisible =
+              false; // Hide the hint keyboard when the text field is focused
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _textFieldFocusNode.dispose(); // Dispose of the focus node
+    textController.dispose();
+    super.dispose();
+  }
 
   void toggleHintKeyboard() {
     setState(() {
       _isHintKeyboardVisible = !_isHintKeyboardVisible;
     });
+    // if the hint keyboard is visible, hide the system keyboard
+    if (_isHintKeyboardVisible) {
+      FocusScope.of(context).unfocus(); // Dismiss the system keyboard
+    }
   }
 
   void openImageModal(BuildContext context) {
@@ -150,6 +179,9 @@ class _MyHomePageState extends State<MyHomePage> {
                     width: 200,
                     height: 50,
                     child: TextFormField(
+                      focusNode: _textFieldFocusNode, // Attach focus node
+                      controller: textController,
+                      keyboardType: TextInputType.text,
                       decoration: const InputDecoration(
                         border: UnderlineInputBorder(),
                         labelText: 'Antwoord',
@@ -176,7 +208,9 @@ class _MyHomePageState extends State<MyHomePage> {
             bottom: _isHintKeyboardVisible ? 0 : -300, // Push up or down
             left: 0,
             right: 0,
-            child: const HintKeyboard(), // Your custom keyboard widget
+            child: HintKeyboard(
+              controller: textController,
+            ), // Your custom keyboard widget
           ),
           // The animated help button above the hint keyboard
           AnimatedPositioned(
