@@ -2,8 +2,13 @@ import 'package:flutter/material.dart';
 
 class HintKeyboard extends StatefulWidget {
   final TextEditingController controller;
+  final FocusNode focusNode; // Add FocusNode to manage focus
 
-  const HintKeyboard({Key? key, required this.controller}) : super(key: key);
+  const HintKeyboard({
+    super.key,
+    required this.controller,
+    required this.focusNode, // Pass FocusNode from parent
+  });
 
   @override
   State<HintKeyboard> createState() => _HintKeyboardState();
@@ -13,61 +18,62 @@ class _HintKeyboardState extends State<HintKeyboard> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: EdgeInsets.all(50),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                _buildButton('1'),
-                _buildButton('2'),
-                _buildButton('3'),
-              ],
-            ),
-            Row(
-              children: [
-                _buildButton('4'),
-                _buildButton('5'),
-                _buildButton('6'),
-              ],
-            ),
-            Row(
-              children: [
-                _buildButton('7'),
-                _buildButton('8'),
-                _buildButton('9'),
-              ],
-            ),
-            Row(
-              children: [
-                _buildButton('keyboard',
-                    isSpecial: true), // Adjust for the keyboard button
-              ],
-            ),
-          ],
-        ));
+      padding: const EdgeInsets.all(50),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              _buildButton(const Icon(Icons.first_page), "test"),
+              _buildButton(const Icon(Icons.airplay), "one"),
+              _buildButton(const Icon(Icons.arrow_back), "two"),
+            ],
+          ),
+          Row(
+            children: [
+              _buildButton(const Icon(Icons.scatter_plot_outlined), "three"),
+              _buildButton(const Icon(Icons.gamepad), "test1"),
+              _buildButton(const Icon(Icons.icecream), "test2"),
+            ],
+          ),
+          Row(
+            children: [
+              _buildButton(const Icon(Icons.zoom_in_map), "test3"),
+              _buildButton(const Icon(Icons.battery_full), "test4"),
+              _buildButton(const Icon(Icons.javascript), "test6"),
+            ],
+          ),
+          Row(
+            children: [
+              _buildButton(const Icon(Icons.keyboard), "keyboard",
+                  isKeyboard: true), // Adjust for the keyboard button
+            ],
+          ),
+        ],
+      ),
+    );
   }
 
-  // Individual keys
-  Widget _buildButton(String text, {bool isSpecial = false}) {
+  Widget _buildButton(Icon icon, String input, {bool isKeyboard = false}) {
     return Expanded(
       child: ElevatedButton(
-        onPressed: () => _input(text, isSpecial),
-        child: Text(text),
+        onPressed: () => _input(input, isKeyboard),
+        child: icon,
       ),
     );
   }
 
   // Input handling
-  void _input(String text, bool isSpecial) {
-    // If it's the 'keyboard' button, you can manage focus here or handle keyboard hiding
-    if (isSpecial) {
-      FocusScope.of(context)
-          .unfocus(); // Hide the keyboard or manage focus here
+  void _input(String text, bool isKeyboard) {
+    if (isKeyboard) {
+      // Focus on the text field and show the system keyboard
+      FocusScope.of(context).requestFocus(widget.focusNode);
     } else {
+      // Add the text to the text field
       final value = widget.controller.text + text;
       widget.controller.text = value;
       widget.controller.selection = TextSelection.fromPosition(
-          TextPosition(offset: value.length)); // Move the cursor to the end
+        TextPosition(offset: value.length),
+      ); // Move the cursor to the end
     }
   }
 }

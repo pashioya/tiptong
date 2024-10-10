@@ -5,10 +5,10 @@ class ProgressWidget extends StatelessWidget {
   final int totalProgress;
 
   const ProgressWidget({
-    Key? key,
+    super.key,
     required this.currentProgress,
     required this.totalProgress,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +28,7 @@ class ProgressWidget extends StatelessWidget {
           width: 100,
           height: 8,
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surfaceVariant,
+            color: Theme.of(context).colorScheme.surfaceContainerHighest,
             borderRadius: BorderRadius.circular(4),
           ),
           child: Stack(

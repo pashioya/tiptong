@@ -210,6 +210,7 @@ class _MyHomePageState extends State<MyHomePage> {
             right: 0,
             child: HintKeyboard(
               controller: textController,
+              focusNode: _textFieldFocusNode,
             ), // Your custom keyboard widget
           ),
           // The animated help button above the hint keyboard
