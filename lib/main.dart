@@ -191,6 +191,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   IconButton(
                     onPressed: () {
                       print("Check button pressed");
+                      setState(() {
+                        currentProgress++;
+                      });
                     },
                     icon: const Icon(
                       Icons.check,
